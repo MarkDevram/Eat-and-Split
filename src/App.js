@@ -25,6 +25,14 @@ export default function App() {
 
   const [showAddFriend, setShowAddFriend] = useState(false)
 
+  const [selectedFriend, setSelectedFriend] = useState(null)
+
+  function hanldeSelectedFriend(friend) {
+    console.log("hui")
+    setSelectedFriend(friend)
+    console.log(friend)
+  }
+
   function handleShowFriend(e) {
     e.preventDefault()
     setShowAddFriend(!showAddFriend)
@@ -33,7 +41,10 @@ export default function App() {
   return (
     <div className="app">
       <div className="sidebar">
-        <FriendList friends={Friends} />
+        <FriendList
+          friends={Friends}
+          hanldeSelectedFriend={hanldeSelectedFriend}
+        />
         {showAddFriend && (
           <FormAddFriend
             Friends={Friends}
@@ -45,22 +56,26 @@ export default function App() {
           {!showAddFriend ? "Add friend" : "Close"}
         </Button>
       </div>
-      <FormSplitBill />
+      {selectedFriend ? <FormSplitBill friend={selectedFriend} /> : ""}
     </div>
   )
 }
-function FriendList({ friends }) {
+function FriendList({ friends, hanldeSelectedFriend }) {
   console.log(friends)
   return (
     <ul>
       {friends.map((friend) => (
-        <Friend friend={friend} key={friend.id} />
+        <Friend
+          friend={friend}
+          key={friend.id}
+          hanldeSelectedFriend={hanldeSelectedFriend}
+        />
       ))}
     </ul>
   )
 }
 
-function Friend({ friend }) {
+function Friend({ friend, hanldeSelectedFriend }) {
   return (
     <li>
       <img src={friend.imageURL} alt={friend.name} />
@@ -76,7 +91,13 @@ function Friend({ friend }) {
           {friend.name} need to give you {Math.abs(friend.balance)}€
         </p>
       )}
-      <Button>Choose</Button>
+      <Button
+        onClick={() => {
+          hanldeSelectedFriend(friend)
+        }}
+      >
+        Choose
+      </Button>
     </li>
   )
 }
@@ -137,10 +158,11 @@ function FormAddFriend({ Friends, setFriends, setShowAddFriend }) {
   )
 }
 
-function FormSplitBill() {
+function FormSplitBill({ friend }) {
+  console.log(friend)
   return (
     <form className="form-split-bill">
-      <h2>Split a bill with X </h2>
+      <h2>Split a bill with {friend.name} </h2>
 
       <label>💰 Bill value</label>
       <input type="text" />
@@ -148,14 +170,14 @@ function FormSplitBill() {
       <label>🧒 Your expense</label>
       <input type="text" />
 
-      <label>👬 X's expense</label>
+      <label>👬 {friend.name}'s expense</label>
       <input disabled type="text" />
 
       <label>🤑 Who is Paying the bill ?</label>
       <select>
         <option>Choose</option>
         <option value="user">You</option>
-        <option value="friend">X</option>
+        <option value="friend">{friend.name}</option>
       </select>
       <Button>Spit Bill</Button>
     </form>
