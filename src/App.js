@@ -28,9 +28,10 @@ export default function App() {
   const [selectedFriend, setSelectedFriend] = useState(null)
 
   function hanldeSelectedFriend(friend) {
-    console.log("hui")
-    setSelectedFriend(friend)
+    // setSelectedFriend(friend)
+    setSelectedFriend((cur) => (cur?.id === friend.id ? null : friend))
     console.log(friend)
+    setShowAddFriend(false)
   }
 
   function handleShowFriend(e) {
@@ -44,6 +45,7 @@ export default function App() {
         <FriendList
           friends={Friends}
           hanldeSelectedFriend={hanldeSelectedFriend}
+          selectedFriend={selectedFriend}
         />
         {showAddFriend && (
           <FormAddFriend
@@ -60,7 +62,7 @@ export default function App() {
     </div>
   )
 }
-function FriendList({ friends, hanldeSelectedFriend }) {
+function FriendList({ friends, hanldeSelectedFriend, selectedFriend }) {
   console.log(friends)
   return (
     <ul>
@@ -69,15 +71,17 @@ function FriendList({ friends, hanldeSelectedFriend }) {
           friend={friend}
           key={friend.id}
           hanldeSelectedFriend={hanldeSelectedFriend}
+          selectedFriend={selectedFriend}
         />
       ))}
     </ul>
   )
 }
 
-function Friend({ friend, hanldeSelectedFriend }) {
+function Friend({ friend, hanldeSelectedFriend, selectedFriend }) {
+  const isSelected = selectedFriend?.id === friend.id
   return (
-    <li>
+    <li className={isSelected ? "selected" : ""}>
       <img src={friend.imageURL} alt={friend.name} />
       <h3>{friend.name}</h3>
       {friend.balance < 0 ? (
@@ -161,7 +165,7 @@ function FormAddFriend({ Friends, setFriends, setShowAddFriend }) {
 function FormSplitBill({ friend }) {
   console.log(friend)
   return (
-    <form className="form-split-bill">
+    <form className="form-split-bill ">
       <h2>Split a bill with {friend.name} </h2>
 
       <label>💰 Bill value</label>
