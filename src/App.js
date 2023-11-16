@@ -29,7 +29,7 @@ export default function App() {
 
   function hanldeSelectedFriend(friend) {
     // setSelectedFriend(friend)
-    setSelectedFriend((cur) => (cur?.id === friend.id ? null : friend))
+    setSelectedFriend((cur) => (cur?.id === friend?.id ? null : friend))
     console.log(friend)
     setShowAddFriend(false)
   }
@@ -37,6 +37,18 @@ export default function App() {
   function handleShowFriend(e) {
     e.preventDefault()
     setShowAddFriend(!showAddFriend)
+  }
+
+  function submitSplitBill(value) {
+    console.log(value)
+    setFriends((friends) =>
+      friends.map((friend) =>
+        friend.id === selectedFriend.id
+          ? { ...friend, balance: friend.balance + value }
+          : friend
+      )
+    )
+    setSelectedFriend(null)
   }
 
   return (
@@ -176,7 +188,8 @@ function FormSplitBill({ friend, onSplitBill }) {
     e.preventDefault()
     console.log("Split Bill Submit")
     if (!bill || !paidByUser) return
-    onSplitBill(whoIsPaying === "user" ? paidByFriend : -paidByUser)
+    const value = whoIsPaying === "user" ? paidByFriend : -paidByUser
+    onSplitBill(value)
   }
   function handlerPaidByUser(e) {
     e.target.value > 0
@@ -222,6 +235,7 @@ function FormSplitBill({ friend, onSplitBill }) {
           setWhoIsPaying(e.target.value)
         }}
       >
+        <option>select</option>
         <option value="user">You</option>
         <option value="friend">{friend.name}</option>
       </select>
