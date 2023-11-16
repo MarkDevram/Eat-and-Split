@@ -1,1 +1,1 @@
-link 🌏:  split-eat-split.netlify.app
+link 🌏:  https://split-eat-split.netlify.app/
